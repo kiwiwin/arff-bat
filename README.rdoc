@@ -1,0 +1,7 @@
+== Introduction
+
+This project offers the ability to deal with multi arff files. Such as merging, split.
+
+== Contact Me
+
+email: kiwi.swhite.coder@gmail.com
