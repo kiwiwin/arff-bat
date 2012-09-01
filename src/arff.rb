@@ -1,10 +1,24 @@
-class Arff
+class Arff	
 
-	def initialize(arff_file_path)
+	def self.open(arff_file_path)
 		lines = read_lines(arff_file_path)
-		@relation = parse_relation(lines[0])
-		@instances = parse_instances(lines)
-		@attributes = parse_attributes(lines)
+		relation = parse_relation(lines[0])
+		instances = parse_instances(lines)
+		attributes = parse_attributes(lines)
+		Arff.new(relation, attributes, instances)		
+	end
+
+	def initialize(relation, attributes, instances)
+		@relation = relation
+		@attributes = attributes
+		@instances = instances
+	end
+
+	def ==(obj)
+  	return false if obj.relation != @relation
+  	return false if obj.attributes != @attributes
+		return false if obj.all != @instances
+		return true
 	end
 
 	def relation
@@ -23,9 +37,19 @@ class Arff
 		@attributes
 	end
 
+	def sample(sample_rate)
+		index = 0
+		sample_instances = @instances.inject([]) do |result, instance|
+			result << instance if index % sample_rate == 0
+			index += 1
+			result
+		end
+		return Arff.new(@relation, @attributes, sample_instances)
+	end
+
 private
 
-	def read_lines(arff_file_path)
+	def self.read_lines(arff_file_path)
 		file = File.open(arff_file_path)
 		lines = file.readlines.collect do |line|
 			line.chomp!
@@ -34,20 +58,18 @@ private
 		lines
 	end
 
-	def parse_relation(line)
+	def self.parse_relation(line)
 		line.match(/@relation (.*)/)[1]
 	end
 
-	def parse_instances(lines)
+	def self.parse_instances(lines)
 		data_index = lines.index("@data")
 		lines[data_index+1..-1]
 	end
 
-	def parse_attributes(lines)
+	def self.parse_attributes(lines)
 		lines.inject([]) do |attributes, line|
-			if line.match(/@attribute .*/)
-				attributes << line
-			end
+			attributes << line if line.match(/@attribute .*/)
 			attributes
 		end
 	end
