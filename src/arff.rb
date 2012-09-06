@@ -8,6 +8,17 @@ class Arff
 		Arff.new(relation, attributes, instances)		
 	end
 
+	def to_s
+		result = []
+		result << "@relation #{@relation}"
+		result << ""
+		result << @attributes
+		result << ""
+		result << "@data"
+		result << @instances
+		result.flatten!
+	end
+
 	def initialize(relation, attributes, instances)
 		@relation = relation
 		@attributes = attributes

@@ -24,6 +24,14 @@ describe Arff do
 			@arff.attributes.should == ["@attribute X numeric", "@attribute Y numeric"]
 		end
 
+		it "should return arff file as a single string object" do
+			arff_file = File.open("#{FIXTURE_PATH}/simplest.arff")
+			expected = arff_file.readlines.collect do |line|
+				line.chomp!
+			end
+			@arff.to_s.should == expected 
+		end
+
 	end
 
 	context "advanced functinal" do
